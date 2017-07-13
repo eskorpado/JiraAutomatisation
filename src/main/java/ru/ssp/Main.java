@@ -290,11 +290,4 @@ public class Main extends HttpServlet{
             issue.update().field(Field.FIX_VERSIONS, versions).execute();
         }
     }
-
-
-    private void updateReporter(String issue) throws JiraException
-    {
-        User user = User.get(jiraClient.getRestClient(),"krutovbs");
-        jiraClient.getIssue(issue).update().field(Field.REPORTER,user).execute();
-    }
 }
