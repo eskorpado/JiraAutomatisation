@@ -86,10 +86,8 @@ public class Main extends HttpServlet{
         try {
             if (StringUtils.isBlank(req.getParameter("comment"))) {
                 issue = createIssue(fields, files);
-                out.print("Issue Created");
             } else {
                 issue = updateIssue(req.getParameter("comment"), fields, files);
-                out.print("Issue Updated");
             }
         } catch (JiraException e)
         {
@@ -291,5 +289,12 @@ public class Main extends HttpServlet{
         {
             issue.update().field(Field.FIX_VERSIONS, versions).execute();
         }
+    }
+
+
+    private void updateReporter(String issue) throws JiraException
+    {
+        User user = User.get(jiraClient.getRestClient(),"krutovbs");
+        jiraClient.getIssue(issue).update().field(Field.REPORTER,user).execute();
     }
 }

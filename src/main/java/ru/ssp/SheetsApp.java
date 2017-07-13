@@ -12,9 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import net.rcarz.jiraclient.BasicCredentials;
-import net.rcarz.jiraclient.JiraClient;
-import net.rcarz.jiraclient.JiraException;
+import net.rcarz.jiraclient.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -65,11 +63,14 @@ public class SheetsApp extends HttpServlet {
             e.getMessage();
             return;
         }
+        String testerMail = getMail(access_token);
 
         String issue = req.getParameter("issue");
         String row = req.getParameter("row");
         String sheetId = req.getParameter("sheetid");
         String spreadSheetId = req.getParameter("spreadsheetid");
+
+        try { updatetReporter(spreadSheetId,service,testerMail,issue); } catch (Exception ignored) {}
 
         String comment = "https://jira.sib-soft.ru/jira/browse/" + issue;
         String commentCell = getCell(spreadSheetId,sheetId,service,"comment") + row;//"G" + row;
@@ -85,7 +86,7 @@ public class SheetsApp extends HttpServlet {
         String date = new SimpleDateFormat("dd.MM.yyyy").format(Calendar.getInstance().getTime());
         String dateCell = getCell(spreadSheetId,sheetId,service,"date") + row;//"L" + row;
 
-        String tester = getTester(spreadSheetId,service,getMail(access_token));
+        String tester = getTester(spreadSheetId,service,testerMail);
         String testerCell = getCell(spreadSheetId,sheetId,service,"tester") + row;
 
         updateCell(spreadSheetId, sheetId, commentCell, service, comment);
@@ -184,6 +185,28 @@ public class SheetsApp extends HttpServlet {
             }
         }
         return tester;
+    }
+
+    /**
+     * Получает Фамилию тестировщика из листа "Списки"
+     */
+    protected void updatetReporter(String spreadsheetId, Sheets service,String email, String issue) throws IOException, JiraException
+    {
+        String reporter = "";
+        for (int i = 1; i < 30; i++) {
+            String range = "'Списки'!C"+i;
+            List<List<Object>> values = service.spreadsheets().values().get(spreadsheetId,range).execute().getValues();
+            if (values != null) {
+                String emails = (String) values.get(0).get(0);
+                if (emails.equals(email)) {
+                    range = "'Списки'!I" + i;
+                    reporter = (String) service.spreadsheets().values().get(spreadsheetId, range).execute().getValues().get(0).get(0);
+                    break;
+                }
+            }
+        }
+        User user = User.get(setJiraClient().getRestClient(),reporter);
+        setJiraClient().getIssue(issue).update().field(Field.REPORTER,user).execute();
     }
 
     /**
