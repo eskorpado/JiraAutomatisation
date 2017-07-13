@@ -1,0 +1,93 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <base target="_top">
+    <?!= include('Stylesheet'); ?>
+</head>
+<body onload="setSummary()">
+<script type="text/javascript">
+    function closeIt() {
+        setInterval('google.script.host.close()', 1000);
+    }
+
+    function setSummary() {
+        document.getElementById("summary").focus();
+        document.getElementById("summary").innerHTML = ("<?= summary ?>");
+    }
+</script>
+<form name="forma" action="http://jiraauto.tk/jira/" target="_blank" method="post" class="form-style-1"
+      accept-charset="utf-8" enctype="multipart/form-data" onsubmit="closeIt()">
+    <li><label>Для возможности изменения полей, необходимо вступить в <a
+            href="https://groups.google.com/forum/#!forum/risky-access-by-unreviewed-apps">группу</a></label>
+
+    <li><label>Summary</label>
+        <textarea id="summary" name="summary" rows="5" maxlength=255 required></textarea>
+    </li>
+    <li><label>Priority</label>
+        <select name="priority">
+            <option value="Срочный">Срочный</option>
+            <option value="Сделать сейчас">Сделать сейчас</option>
+        </select>
+    </li>
+
+    <li><label>Environment</label>
+        <textarea name="environment" rows="5" maxlength=255 required><?= environment ?></textarea>
+    </li>
+
+    <li><label>Description</label>
+        <span>Предусловия</span>
+        <textarea name="preconditions" rows="10" maxlength=2000 required></textarea>
+    </li>
+
+    <li>
+        <span>Шаги воспроизведения</span>
+        <textarea name="regeneration_steps" rows="10" maxlength=2000 required><?= regeneration_steps ?></textarea>
+    </li>
+
+    <li>
+        <span>Ожидаемый результат</span>
+        <textarea name="expected_result" rows="10" maxlength=2000 required><?= expected_result ?></textarea>
+    </li>
+
+    <li>
+        <span>Фактический результат</span>
+        <textarea name="actual_result" rows="10" maxlength=2000 required></textarea>
+    </li>
+
+    <li>
+        <span>Код сценария</span>
+        <textarea name="scenario_code" rows=1 maxlength=2000 required><?= scenario_code ?></textarea>
+    </li>
+
+
+    <span>Ссылка на ЧТЗ</span>
+    <li>
+        <textarea name="link_text" rows=1 placeholder="Текст ссылки" maxlength=100 required></textarea>
+    </li>
+    <li>
+        <textarea name="link_adress" rows=1 placeholder="Адресс ссылки" maxlength=100 required></textarea>
+    </li>
+
+    <li>
+        <span>Версия ЧТЗ</span>
+        <textarea name="TOR_version" rows=1 maxlength=10 required></textarea>
+    </li>
+
+    <li>
+        <label>Attachments</label>
+        <input type="file" name="file1"></li>
+    <li><input type="file" name="file2"></li>
+    <li><input type="file" name="file3"></li>
+
+    <input type="hidden" value="<?= components ?>" name="components">
+    <input type="hidden" value="<?= fix_versions ?>" name="fix_versions">
+    <input type="hidden" value="<?= link_issue ?>" name="link_issue">
+    <input type="hidden" value="<?= comment ?>" name="comment">
+    <input type="hidden" value="<?= sheet ?>" name="sheet">
+    <input type="hidden" value="<?= spreadsheet ?>" name="spreadsheet">
+    <input type="hidden" value="<?= row ?>" name="row">
+
+    <li><input id="btn" type="submit"></li>
+</form>
+</body>
+</html>
