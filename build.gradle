@@ -1,0 +1,33 @@
+group 'GradleWeb'
+version '1.0-SNAPSHOT'
+
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+mainClassName = "ru.ssp.Main"
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("javax.servlet:javax.servlet-api:3.1.0")
+    compile("com.google.code.gson:gson:2.8.1")
+    compile('com.google.api-client:google-api-client:1.22.0')
+    compile('org.apache.httpcomponents:httpclient:4.5.3')
+    compile("net.rcarz:jira-client:0.5")
+    compile('com.google.apis:google-api-services-sheets:v4-rev478-1.22.0')
+    compile('org.apache.commons:commons-lang3:3.6')
+
+}
+
+war{
+    webXml = null
+}
+
+compileJava.options.encoding = 'UTF-8'
